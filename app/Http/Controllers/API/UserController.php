@@ -56,7 +56,7 @@ class UserController extends Controller
 		if (Auth::check()) {
 			$request->user()->token()->revoke();
 		}
-		return response()->json(['message' => 'User logged out'], 200);
+		return response()->json(['success' => 'User logged out'], 200);
 	}
 
 	public function update(Request $request){

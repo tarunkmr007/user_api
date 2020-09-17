@@ -13,9 +13,16 @@
     </head>
     <body>
         <div class="container mt-4">
+            <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                  <a class="btn btn-dark" href="{{ url('register') }}">Register</a>
+                  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                      <form class="form-inline my-2 my-lg-0" method="post">
+                          <button class="btn btn-outline-success my-2 my-sm-0" id="logout" type="button">Logout</button>
+                      </form>
+                  </div>
+            </nav>
             
-            <a class="btn btn-dark" href="{{ url('register') }}">Register</a>
-        <h4 id="data"></h4>
+            <h4 id="data"></h4>
     <div class="row justify-content-center">
         
         <div class="col-md-8">
@@ -63,7 +70,7 @@
               integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0="
               crossorigin="anonymous"></script>
     <script>
-
+        var api_token;
         $('#frm').submit(function(e){
             e.preventDefault();
             $.ajaxSetup({
@@ -78,13 +85,30 @@
                 dataType: 'JSON',
                 success: function(value){
                     console.log(value);
-                    $('#data').html(value.success);
+                    api_token = value.success['token'];
+                    $('#data').html(value.success['msg']);
                 }
 
 
             });
 
             // alert('hi');
-        })
+        });
+        $('#logout').click(function(e){
+            e.preventDefault();
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN' : $('meta[name="csrf-token"]').attr('content'),
+                    'Authorization' : 'Bearer '+api_token
+                }
+            });
+            $.ajax({
+                type: 'post',
+                url : '/api/logout',
+                success : function(value){
+                    $('#data').html(value.success);
+                }
+            })
+        });
     </script>
 </html>
